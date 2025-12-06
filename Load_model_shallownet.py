@@ -10,6 +10,7 @@ from imutils import paths
 import numpy as np
 import cv2
 import os
+import random
 
 # --- Danh sách nhãn đúng theo thứ tự lúc train ---
 classLabels = ["cat", "chicken", "dog", "pig"]
@@ -43,6 +44,8 @@ correct = np.sum(np.array(predLabels) == np.array(trueLabels))
 total = len(imagePaths)
 accuracy = correct / total * 100
 
+MAX_SHOW = 50
+show_indexes = set(random.sample(range(len(imagePaths)), MAX_SHOW))
 print("\n=== KẾT QUẢ PHÂN LOẠI ===")
 for (i, imagePath) in enumerate(imagePaths):
     image = cv2.imread(imagePath)
@@ -53,11 +56,12 @@ for (i, imagePath) in enumerate(imagePaths):
     text = f"Pred: {predLabel} | True: {trueLabel}"
     print(f"[{i+1:02d}] {os.path.basename(imagePath)} --> {text}")
 
-    # Hiển thị ảnh (tùy chọn)
-    cv2.putText(image, text, (10, 25),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
-    cv2.imshow("Prediction", image)
-    cv2.waitKey(0)
+    # Chỉ hiển thị 50 ảnh ngẫu nhiên
+    if i in show_indexes:
+        cv2.putText(image, text, (10, 25),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+        cv2.imshow("Prediction", image)
+        cv2.waitKey(0)
 
 cv2.destroyAllWindows()
 
